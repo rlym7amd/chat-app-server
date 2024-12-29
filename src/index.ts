@@ -1,15 +1,12 @@
-import express from "express";
+import app from "./server";
 import dotenv from "dotenv";
+import { connect } from "./db/connect";
 
 dotenv.config();
 
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.get("/healthcheck", (req, res) => {
-  res.status(200).send("ok\n");
-});
+const port = process.env.PORT || 8000;
 
 app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
+  console.log(`Server is listening at port ${port}`);
+  connect();
 });

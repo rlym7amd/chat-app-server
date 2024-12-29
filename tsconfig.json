@@ -18,6 +18,9 @@
     /* If transpiling with TypeScript: */
     "module": "NodeNext",
     "outDir": "dist",
-    "sourceMap": true
+    "sourceMap": true,
+
+    /* If your code doesn't run in the DOM: */
+    "lib": ["es2022"]
   }
 }
