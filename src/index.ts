@@ -5,7 +5,7 @@ import { log } from "./logger";
 
 dotenv.config();
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 1337;
 
 app.listen(port, () => {
   log.info(`Server is listening at port ${port}`);
