@@ -3,6 +3,6 @@ import pretty from "pino-pretty";
 
 export const log = logger(
   pretty({
-    ignore: "pid",
+    ignore: "pid,hostname",
   })
 );
