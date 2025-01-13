@@ -2,6 +2,8 @@ import express from "express";
 import { createUserHandler } from "./controllers/user.controller";
 import { validateRequest } from "./middleware/validateRequest";
 import { createUserSchema } from "./schemas/user.schema";
+import { createSessionSchema } from "./schemas/session.schema";
+import { createSessionHandler } from "./controllers/session.controller";
 
 const app = express();
 
@@ -13,5 +15,11 @@ app.get("/healthcheck", (req, res) => {
 });
 
 app.post("/api/users", validateRequest(createUserSchema), createUserHandler);
+
+app.post(
+  "/api/sessions",
+  validateRequest(createSessionSchema),
+  createSessionHandler
+);
 
 export default app;

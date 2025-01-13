@@ -20,26 +20,26 @@ export async function createUser(input: createUserBody) {
         email: usersTable.email,
       });
 
-    return userResult[0]
+    return userResult[0];
   } catch (err) {
     if (err instanceof Error) {
-      log.error(`Database error: ${err.message}`)
+      log.error(`Database error: ${err.message}`);
       throw new Error(err.message);
     }
-    log.error("Unkown error")
   }
 }
 
 export async function getUserByEmail(email: string) {
   try {
-    const userResult = await db.select().from(usersTable).where(eq(usersTable.email, email));
+    const userResult = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, email));
     return userResult[0];
   } catch (err) {
     if (err instanceof Error) {
-      log.error(`Database error: ${err.message}`)
+      log.error(`Database error: ${err.message}`);
       throw new Error(err.message);
     }
   }
-
 }
-
