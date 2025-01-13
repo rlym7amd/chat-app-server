@@ -28,9 +28,11 @@
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.38.1",
     "express": "^4.21.2",
+    "jose": "^5.9.6",
     "pg": "^8.13.1",
     "pino": "^9.6.0",
     "pino-pretty": "^13.0.0",
     "zod": "^3.24.1"
-  }
+  },
+  "packageManager": "pnpm@9.15.2+sha512.93e57b0126f0df74ce6bff29680394c0ba54ec47246b9cf321f0121d8d9bb03f750a705f24edc3c1180853afd7c2c3b94196d0a3d53d3e069d9e2793ef11f321"
 }
