@@ -27,5 +27,11 @@ export async function verifyJwt(jwt: string) {
 
   const publicKey = await importSPKI(spki, alg);
 
-  return await jwtVerify(jwt, publicKey);
+  try {
+    const decoded = await jwtVerify(jwt, publicKey);
+
+    return decoded;
+  } catch {
+    return null;
+  }
 }

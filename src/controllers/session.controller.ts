@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { createSession } from "../services/session.service";
+import { createSession, getSessions } from "../services/session.service";
 import { getUserByEmail } from "../services/user.service";
 import { signJWT, validatePassword } from "../utils";
 
-export async function createSessionHandler(req: Request, res: Response) {
+export async function createUserSessionHandler(req: Request, res: Response) {
   const user = await getUserByEmail(req.body.email);
   if (!user) {
     res.status(401).send("Invalid email or password");
@@ -36,4 +36,12 @@ export async function createSessionHandler(req: Request, res: Response) {
   } catch {
     res.status(409).send("Could not log in properly, please try again");
   }
+}
+
+export async function getUserSessionHandler(req: Request, res: Response) {
+  const userId = res.locals.user.id;
+
+  const sessions = await getSessions(userId);
+
+  res.json(sessions);
 }
