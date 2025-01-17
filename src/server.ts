@@ -5,6 +5,7 @@ import { createUserSchema } from "./schemas/user.schema";
 import { createSessionSchema } from "./schemas/session.schema";
 import {
   createUserSessionHandler,
+  deleteUserSessionHandler,
   getUserSessionHandler,
 } from "./controllers/session.controller";
 import { deserializeUser } from "./middleware/deserializeUser";
@@ -29,5 +30,7 @@ app.post(
 );
 
 app.get("/api/sessions", requireUser, getUserSessionHandler);
+
+app.delete("/api/sessions", requireUser, deleteUserSessionHandler);
 
 export default app;

@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { importPKCS8, importSPKI, JWTPayload, jwtVerify, SignJWT } from "jose";
+import { log } from "./logger";
 
 export async function validatePassword(
   password: string,
@@ -28,10 +29,11 @@ export async function verifyJwt(jwt: string) {
   const publicKey = await importSPKI(spki, alg);
 
   try {
-    const decoded = await jwtVerify(jwt, publicKey);
-
-    return decoded;
-  } catch {
+    return await jwtVerify(jwt, publicKey);
+  } catch (err) {
+    if (err instanceof Error) {
+      log.error(err.message);
+    }
     return null;
   }
 }
