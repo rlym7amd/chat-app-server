@@ -10,8 +10,16 @@ import {
 } from "./controllers/session.controller";
 import { deserializeUser } from "./middleware/deserializeUser";
 import { requireUser } from "./middleware/requireUser";
+import cors from "cors";
 
 const app = express();
+
+app.use(
+  cors({
+    origin: process.env.ORIGIN,
+    credentials: true,
+  })
+);
 
 // Middleware to parse JSON bodies
 app.use(express.json()); // This is required for parsing JSON bodies
