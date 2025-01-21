@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { createUser } from "../services/user.service";
 import { createUserBody } from "../schemas/user.schema";
+import { log } from "../logger";
 
 export async function createUserHandler(
   req: Request<{}, {}, createUserBody>,
@@ -11,11 +12,6 @@ export async function createUserHandler(
 
     res.status(201).json(user);
   } catch (err) {
-    if (err instanceof Error) {
-      res.status(409).send(err.message);
-      return;
-    }
-
-    res.status(409).send("Unknown error during user creation");
+    res.status(409).json("Email already exists!");
   }
 }
