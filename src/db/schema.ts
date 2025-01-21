@@ -8,7 +8,9 @@ import {
 import { createId } from "@paralleldrive/cuid2";
 
 export const usersTable = pgTable("users", {
-  id: text("id").default(createId()).primaryKey(), // Use cuid for unique ID
+  id: text("id")
+    .$defaultFn(() => createId())
+    .primaryKey(), // Use cuid for unique ID
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),
