@@ -9,7 +9,7 @@ export async function deserializeUser(
 ) {
   const headers = req.headers;
   const accessToken = headers.authorization?.replace(/^Bearer\s/, "");
-  const refreshToken = headers["x-refresh"] as string;
+  const refreshToken = headers["x-refresh"];
 
   if (!accessToken) {
     next();
@@ -20,10 +20,12 @@ export async function deserializeUser(
 
   if (decoded) {
     res.locals.user = decoded.payload;
+    next();
+    return;
   }
 
   if (!decoded && refreshToken) {
-    const newAccessToken = await reIssueAccessToken(refreshToken);
+    const newAccessToken = await reIssueAccessToken(refreshToken as string);
 
     if (!newAccessToken) {
       next();
@@ -32,7 +34,6 @@ export async function deserializeUser(
 
     res.setHeader("x-access-token", newAccessToken);
     const decoded = await verifyJwt(newAccessToken);
-    console.log(decoded?.payload);
 
     if (decoded) {
       res.locals.user = decoded.payload;
