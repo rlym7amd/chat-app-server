@@ -19,7 +19,9 @@ export const usersTable = pgTable("users", {
 });
 
 export const sessionsTable = pgTable("sessions", {
-  id: text("id").default(createId()).primaryKey(),
+  id: text("id")
+    .$defaultFn(() => createId())
+    .primaryKey(),
   userId: text("user_id")
     .notNull()
     .references(() => usersTable.id),
