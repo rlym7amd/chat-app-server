@@ -1,5 +1,8 @@
 import express from "express";
-import { createUserHandler } from "./controllers/user.controller";
+import {
+  createUserHandler,
+  getCurrentUser,
+} from "./controllers/user.controller";
 import { validateRequest } from "./middleware/validateRequest";
 import { createUserSchema } from "./schemas/user.schema";
 import { createSessionSchema } from "./schemas/session.schema";
@@ -40,5 +43,7 @@ app.post(
 app.get("/api/sessions", requireUser, getUserSessionHandler);
 
 app.delete("/api/sessions", requireUser, deleteUserSessionHandler);
+
+app.get("/api/me", requireUser, getCurrentUser);
 
 export default app;

@@ -15,3 +15,7 @@ export async function createUserHandler(
     res.status(409).json("Email already exists!");
   }
 }
+
+export function getCurrentUser(req: Request, res: Response) {
+  res.json(res.locals.user);
+}
