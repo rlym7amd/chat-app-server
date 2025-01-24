@@ -28,7 +28,7 @@ app.use(
 app.use(express.json()); // This is required for parsing JSON bodies
 app.use(deserializeUser);
 
-app.get("/healthcheck", (req, res) => {
+app.get("/healthcheck", (_, res) => {
   res.sendStatus(200);
 });
 
