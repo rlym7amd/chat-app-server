@@ -24,8 +24,7 @@ app.use(
   })
 );
 
-// Middleware to parse JSON bodies
-app.use(express.json()); // This is required for parsing JSON bodies
+app.use(express.json());
 app.use(deserializeUser);
 
 app.get("/healthcheck", (_, res) => {
