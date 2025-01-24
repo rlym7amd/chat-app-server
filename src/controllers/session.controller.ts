@@ -10,14 +10,14 @@ import { signJWT, validatePassword } from "../utils";
 export async function createUserSessionHandler(req: Request, res: Response) {
   const user = await getUserByEmail(req.body.email);
   if (!user) {
-    res.status(401).send("Invalid email or password");
+    res.status(401).json("Invalid email or password");
     return;
   }
 
   const { password, ...userWithoutPassword } = user;
   const isValid = await validatePassword(req.body.password, password);
   if (!isValid) {
-    res.status(401).send("Invalid email or password");
+    res.status(401).json("Invalid email or password");
     return;
   }
 
@@ -38,7 +38,7 @@ export async function createUserSessionHandler(req: Request, res: Response) {
 
     res.status(201).json({ accessToken, refreshToken });
   } catch {
-    res.status(409).send("Could not log in properly, please try again");
+    res.status(409).json("Could not log in properly, please try again");
   }
 }
 
