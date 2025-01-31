@@ -34,6 +34,8 @@ export async function verifyJwt(jwt: string) {
     if (err instanceof Error) {
       log.error(err.message);
     }
-    return null;
+    return {
+      payload: null,
+    };
   }
 }
