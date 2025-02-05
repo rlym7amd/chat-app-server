@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, getTableColumns } from "drizzle-orm";
 import { db } from "../db";
 import { usersTable } from "../db/schema";
 import bcrypt from "bcrypt";
@@ -27,6 +27,16 @@ export async function getUserByEmail(email: string) {
     .select()
     .from(usersTable)
     .where(eq(usersTable.email, email));
+
+  return user;
+}
+
+export async function getUserById(id: string) {
+  const { password, ...rest } = getTableColumns(usersTable);
+  const [user] = await db
+    .select({ ...rest })
+    .from(usersTable)
+    .where(eq(usersTable.id, id));
 
   return user;
 }
