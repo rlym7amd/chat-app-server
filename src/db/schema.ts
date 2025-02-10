@@ -1,6 +1,5 @@
 import { pgTable, text, varchar, timestamp } from "drizzle-orm/pg-core";
 import { createId } from "@paralleldrive/cuid2";
-import { uuid } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const usersTable = pgTable("users", {
