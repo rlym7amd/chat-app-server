@@ -2,7 +2,6 @@ import { eq, getTableColumns } from "drizzle-orm";
 import { db } from "../db";
 import { usersTable } from "../db/schema";
 import bcrypt from "bcrypt";
-import { log } from "../logger";
 import { registerBody } from "../schemas/auth.schema";
 
 export async function createUser(input: registerBody) {
