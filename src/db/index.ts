@@ -1,4 +1,5 @@
 import { drizzle } from "drizzle-orm/node-postgres";
+import * as schema from "./schema";
 import dotenv from "dotenv";
 import { Pool } from "pg";
 import { log } from "../logger";
@@ -35,4 +36,4 @@ export async function connect() {
   }
 }
 
-export const db = drizzle(pool);
+export const db = drizzle(pool, { schema });

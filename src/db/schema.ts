@@ -13,7 +13,7 @@ export const usersTable = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const conversationsTable = pgTable("Conversations", {
+export const conversationsTable = pgTable("conversations", {
   id: text("id")
     .$defaultFn(() => createId())
     .primaryKey(), // Use cuid for unique ID
