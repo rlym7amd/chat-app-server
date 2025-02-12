@@ -1,7 +1,14 @@
 import { eq, inArray, sql } from "drizzle-orm";
 import { db } from "../db";
-import { conversationsTable, participantsTable } from "../db/schema";
-import { createConversationBody } from "../schemas/conversation.schema";
+import {
+  conversationsTable,
+  messagesTable,
+  participantsTable,
+} from "../db/schema";
+import {
+  createConversationBody,
+  createConversationMessageBody,
+} from "../schemas/conversation.schema";
 
 export async function createConversation(body: createConversationBody) {
   const [conversation] = await db
@@ -33,4 +40,21 @@ export async function isExistingConversation(participants: string[]) {
   console.log({ existingConversation });
 
   return existingConversation?.conversationId ? true : false;
+}
+
+export async function createConversationMessage(
+  body: createConversationMessageBody,
+  conversationId: string,
+  senderId: string
+) {
+  const [message] = await db
+    .insert(messagesTable)
+    .values({
+      content: body.content,
+      conversationId,
+      senderId,
+    })
+    .returning();
+
+  return message;
 }
