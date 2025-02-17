@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import {
   createConversation,
   createConversationMessage,
+  getConversationById,
   isExistingConversation,
 } from "../services/conversation.service";
 import { log } from "../logger";
-import { convertionsRelations } from "../db/schema";
 
 export async function createConversationHandler(req: Request, res: Response) {
   try {
@@ -39,4 +39,21 @@ export async function createConversationMessageHandler(
   await createConversationMessage(body, conversationId, userId);
 
   res.status(201).json({ message: "Message created successfully" });
+}
+
+export async function getConversationByIdHandler(req: Request, res: Response) {
+  try {
+    const { conversationId } = req.params;
+
+    if (!conversationId) {
+      res.status(400).json({ message: "conversationId param required" });
+      return;
+    }
+
+    const conversation = await getConversationById(conversationId);
+
+    res.json(conversation);
+  } catch {
+    res.status(500).json({ message: "Server error" });
+  }
 }

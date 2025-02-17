@@ -1,9 +1,7 @@
 import express from "express";
 import cors from "cors";
-import authRoutes from "./routes/auth.routes";
-import userRoutes from "./routes/user.routes";
-import conversationRoutes from "./routes/conversation.routes";
 import cookieParser from "cookie-parser";
+import router from "./router";
 
 const app = express();
 
@@ -17,9 +15,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api", conversationRoutes);
+app.use("/api", router);
 
 app.get("/healthcheck", (req, res) => {
   res.sendStatus(200);

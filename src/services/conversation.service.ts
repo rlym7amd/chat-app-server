@@ -58,3 +58,20 @@ export async function createConversationMessage(
 
   return message;
 }
+
+export async function getConversationById(conversationId: string) {
+  return await db.query.conversationsTable.findFirst({
+    where: eq(conversationsTable.id, conversationId),
+    with: {
+      messages: {
+        with: {
+          sender: {
+            columns: {
+              password: false,
+            },
+          },
+        },
+      },
+    },
+  });
+}
