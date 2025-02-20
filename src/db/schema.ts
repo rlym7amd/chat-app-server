@@ -1,6 +1,7 @@
 import { pgTable, text, varchar, timestamp } from "drizzle-orm/pg-core";
 import { createId } from "@paralleldrive/cuid2";
 import { relations } from "drizzle-orm";
+import { pgEnum } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
   id: text("id")
@@ -12,6 +13,29 @@ export const usersTable = pgTable("users", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const statusEnum = pgEnum("status", ["pending", "accepted", "rejected"]);
+
+export const friendsTable = pgTable("friends", {
+  userFirstId: text("user_first_id")
+    .notNull()
+    .references(() => usersTable.id, { onDelete: "cascade" }),
+  userSecondId: text("user_second_id")
+    .notNull()
+    .references(() => usersTable.id, { onDelete: "cascade" }),
+  status: statusEnum().default("pending").notNull(),
+});
+
+export const friendshipsRelations = relations(friendsTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [friendsTable.userFirstId],
+    references: [usersTable.id],
+  }),
+  conversation: one(usersTable, {
+    fields: [friendsTable.userSecondId],
+    references: [usersTable.id],
+  }),
+}));
 
 export const conversationsTable = pgTable("conversations", {
   id: text("id")
@@ -25,7 +49,7 @@ export const convertionsRelations = relations(
   ({ many }) => ({
     participants: many(participantsTable),
     messages: many(messagesTable),
-  })
+  }),
 );
 
 export const participantsTable = pgTable("participants", {
@@ -48,7 +72,7 @@ export const participantsRelations = relations(
       fields: [participantsTable.conversationId],
       references: [conversationsTable.id],
     }),
-  })
+  }),
 );
 
 export const messagesTable = pgTable("messages", {
