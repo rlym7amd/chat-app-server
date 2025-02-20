@@ -14,6 +14,10 @@ export const usersTable = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const usersRelations = relations(usersTable, ({ many }) => ({
+  friends: many(friendsTable),
+}));
+
 export const statusEnum = pgEnum("status", ["pending", "accepted", "rejected"]);
 
 export const friendsTable = pgTable("friends", {
