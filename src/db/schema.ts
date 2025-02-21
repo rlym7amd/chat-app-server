@@ -2,6 +2,7 @@ import { pgTable, text, varchar, timestamp } from "drizzle-orm/pg-core";
 import { createId } from "@paralleldrive/cuid2";
 import { relations } from "drizzle-orm";
 import { pgEnum } from "drizzle-orm/pg-core";
+import { uuid } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
   id: text("id")
@@ -21,22 +22,23 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 export const statusEnum = pgEnum("status", ["pending", "accepted", "rejected"]);
 
 export const friendsTable = pgTable("friends", {
-  userFirstId: text("user_first_id")
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
-  userSecondId: text("user_second_id")
+  friendId: text("friend_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
   status: statusEnum().default("pending").notNull(),
 });
 
 export const friendshipsRelations = relations(friendsTable, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [friendsTable.userFirstId],
+  userId: one(usersTable, {
+    fields: [friendsTable.userId],
     references: [usersTable.id],
   }),
-  conversation: one(usersTable, {
-    fields: [friendsTable.userSecondId],
+  friendId: one(usersTable, {
+    fields: [friendsTable.friendId],
     references: [usersTable.id],
   }),
 }));
