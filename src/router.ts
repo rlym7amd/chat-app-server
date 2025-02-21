@@ -8,7 +8,10 @@ import {
 } from "./controllers/auth.controller";
 import { loginSchema, registerSchema } from "./schemas/auth.schema";
 import { authenticateToken } from "./middleware/authenticateToken";
-import { getUserProfile } from "./controllers/user.controller";
+import {
+  getUserFriendListHandler,
+  getUserProfile,
+} from "./controllers/user.controller";
 import {
   createConversationMessageSchema,
   createConversationSchema,
@@ -37,6 +40,7 @@ router.post("/auth/refresh", refreshToken);
  * Users routes
  */
 router.get("/user/profile", authenticateToken, getUserProfile);
+router.get("/users/:userId/friends", getUserFriendListHandler);
 
 /**
  * Conversations routes
@@ -44,21 +48,21 @@ router.get("/user/profile", authenticateToken, getUserProfile);
 router.get(
   "/conversations/:conversationId",
   authenticateToken,
-  getConversationByIdHandler
+  getConversationByIdHandler,
 );
 
 router.post(
   "/conversations",
   authenticateToken,
   validateRequest(createConversationSchema),
-  createConversationHandler
+  createConversationHandler,
 );
 
 router.post(
   "/conversations/:conversationId/messages",
   authenticateToken,
   validateRequest(createConversationMessageSchema),
-  createConversationMessageHandler
+  createConversationMessageHandler,
 );
 
 /**
