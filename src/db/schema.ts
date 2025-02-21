@@ -15,12 +15,6 @@ export const usersTable = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-// export const usersRelations = relations(usersTable, ({ many }) => ({
-//   friends: many(friendsTable, {
-//     relationName: "friends_ralation",
-//   }),
-// }));
-
 export const statusEnum = pgEnum("status", ["pending", "accepted", "rejected"]);
 
 export const friendsTable = pgTable("friends", {
@@ -35,14 +29,9 @@ export const friendsTable = pgTable("friends", {
 });
 
 export const friendshipsRelations = relations(friendsTable, ({ one }) => ({
-  userId: one(usersTable, {
-    fields: [friendsTable.userId],
-    references: [usersTable.id],
-  }),
-  friendId: one(usersTable, {
+  friend: one(usersTable, {
     fields: [friendsTable.friendId],
     references: [usersTable.id],
-    relationName: "friends_relation",
   }),
 }));
 
