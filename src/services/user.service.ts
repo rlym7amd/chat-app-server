@@ -1,6 +1,6 @@
 import { and, eq, getTableColumns } from "drizzle-orm";
 import { db } from "../db";
-import { friendsTable, usersTable } from "../db/schema";
+import { friendshipsTable, usersTable } from "../db/schema";
 import bcrypt from "bcrypt";
 import { registerBody } from "../schemas/auth.schema";
 
@@ -41,18 +41,23 @@ export async function getUserById(id: string) {
 }
 
 export async function getUserFriendsList(userId: string) {
-  return await db.query.friendsTable.findMany({
+  const friendships = await db.query.friendshipsTable.findMany({
     where: and(
-      eq(friendsTable.userId, userId),
-      eq(friendsTable.status, "accepted"),
+      eq(friendshipsTable.userId, userId),
+      eq(friendshipsTable.status, "accepted"),
     ),
     with: {
-      friend: {
+      user: {
         columns: {
+          id: true,
           email: true,
           name: true,
+          createdAt: true,
+          updatedAt: true,
         },
       },
     },
   });
+
+  return friendships.map((f) => f.user);
 }

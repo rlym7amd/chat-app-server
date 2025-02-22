@@ -22,7 +22,7 @@ export async function getUserFriendListHandler(req: Request, res: Response) {
 
     const friends = await getUserFriendsList(userId);
 
-    res.json({ data: friends });
+    res.json({ friends });
   } catch {
     res.status(500).json({ message: "Server error" });
   }
