@@ -11,7 +11,7 @@ export async function createConversationHandler(req: Request, res: Response) {
   try {
     const exits = await isExistingConversation(req.body.usersId);
     if (exits) {
-      res.json({ message: "Conversation already exits" });
+      res.status(409).json({ message: "Conversation already exits" });
       return;
     }
 
@@ -26,7 +26,7 @@ export async function createConversationHandler(req: Request, res: Response) {
 
 export async function createConversationMessageHandler(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   const body = req.body;
   const { conversationId } = req.params;
