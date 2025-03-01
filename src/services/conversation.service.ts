@@ -10,7 +10,10 @@ import {
   createConversationMessageBody,
 } from "../schemas/conversation.schema";
 
-export async function createConversation(body: createConversationBody) {
+export async function createConversation(
+  userId: string,
+  body: createConversationBody
+) {
   const [conversation] = await db
     .insert(conversationsTable)
     .values({})
@@ -18,13 +21,17 @@ export async function createConversation(body: createConversationBody) {
 
   if (!conversation) return;
 
-  const participantsRecord = body.usersId.map((userId) => ({
-    userId,
-    conversationId: conversation.id,
-  }));
+  const participantsRecord = [
+    { userId, conversationId: conversation.id },
+    { userId: body.receiptId, conversationId: conversation.id },
+  ];
+
   await db.insert(participantsTable).values(participantsRecord);
 
-  return { conversationId: conversation.id, participants: body.usersId };
+  return {
+    conversationId: conversation.id,
+    participants: [userId, body.receiptId],
+  };
 }
 
 export async function isExistingConversation(participants: string[]) {

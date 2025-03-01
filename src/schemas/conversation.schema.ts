@@ -2,7 +2,7 @@ import z from "zod";
 
 export const createConversationSchema = z.object({
   body: z.object({
-    usersId: z.array(z.string()).min(2, "At least two users required"),
+    receiptId: z.string().min(1, "A receiptId is required"),
   }),
 });
 

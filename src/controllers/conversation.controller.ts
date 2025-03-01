@@ -9,13 +9,14 @@ import { log } from "../logger";
 
 export async function createConversationHandler(req: Request, res: Response) {
   try {
-    const exits = await isExistingConversation(req.body.usersId);
+    const userId = res.locals.user.id as string;
+    const exits = await isExistingConversation([userId, req.body.receiptId]);
     if (exits) {
       res.status(409).json({ message: "Conversation already exits" });
       return;
     }
 
-    await createConversation(req.body);
+    await createConversation(userId, req.body);
 
     res.status(201).json({ message: "Conversation created successfully" });
   } catch (err: any) {
