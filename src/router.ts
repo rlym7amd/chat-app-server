@@ -40,7 +40,7 @@ router.post("/auth/refresh", refreshToken);
  * Users routes
  */
 router.get("/user/profile", authenticateToken, getUserProfile);
-router.get("/users/:userId/friends", getUserFriendListHandler);
+router.get("/users/me/friends", authenticateToken, getUserFriendListHandler);
 
 /**
  * Conversations routes

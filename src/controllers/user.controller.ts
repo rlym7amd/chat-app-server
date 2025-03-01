@@ -18,7 +18,7 @@ export async function getUserProfile(req: Request, res: Response) {
 
 export async function getUserFriendListHandler(req: Request, res: Response) {
   try {
-    const userId = req.params.userId!;
+    const userId = res.locals.user.id as string;
 
     const friends = await getUserFriendsList(userId);
 
