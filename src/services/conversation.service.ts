@@ -41,7 +41,7 @@ export async function isExistingConversation(participants: string[]) {
     .where(inArray(participantsTable.userId, participants))
     .groupBy(participantsTable.conversationId)
     .having(
-      sql`COUNT(DISTINCT ${participantsTable.userId}) = ${participants.length}`,
+      sql`COUNT(DISTINCT ${participantsTable.userId}) = ${participants.length}`
     );
 
   if (!existingConversation?.conversationId) {
@@ -54,7 +54,7 @@ export async function isExistingConversation(participants: string[]) {
 export async function createConversationMessage(
   body: createConversationMessageBody,
   conversationId: string,
-  senderId: string,
+  senderId: string
 ) {
   const [message] = await db
     .insert(messagesTable)

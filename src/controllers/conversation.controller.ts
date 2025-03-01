@@ -27,7 +27,7 @@ export async function createConversationHandler(req: Request, res: Response) {
 
 export async function createConversationMessageHandler(
   req: Request,
-  res: Response,
+  res: Response
 ) {
   const body = req.body;
   const { conversationId } = req.params;

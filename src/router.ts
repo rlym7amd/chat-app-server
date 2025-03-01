@@ -48,21 +48,21 @@ router.get("/users/:userId/friends", getUserFriendListHandler);
 router.get(
   "/conversations/:conversationId",
   authenticateToken,
-  getConversationByIdHandler,
+  getConversationByIdHandler
 );
 
 router.post(
   "/conversations",
   authenticateToken,
   validateRequest(createConversationSchema),
-  createConversationHandler,
+  createConversationHandler
 );
 
 router.post(
   "/conversations/:conversationId/messages",
   authenticateToken,
   validateRequest(createConversationMessageSchema),
-  createConversationMessageHandler,
+  createConversationMessageHandler
 );
 
 /**

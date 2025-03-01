@@ -5,7 +5,6 @@ import {
   participantsTable,
   messagesTable,
 } from "./schema";
-import { createId } from "@paralleldrive/cuid2";
 
 async function seedDatabase() {
   try {
