@@ -44,7 +44,7 @@ export async function getUserFriendsList(userId: string) {
   const friendships = await db.query.friendshipsTable.findMany({
     where: and(
       eq(friendshipsTable.userId, userId),
-      eq(friendshipsTable.status, "accepted"),
+      eq(friendshipsTable.status, "accepted")
     ),
     with: {
       user: {

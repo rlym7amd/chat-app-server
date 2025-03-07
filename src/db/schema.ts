@@ -1,13 +1,10 @@
 import { pgTable, text, varchar, timestamp } from "drizzle-orm/pg-core";
-import { createId } from "@paralleldrive/cuid2";
 import { relations } from "drizzle-orm";
 import { pgEnum } from "drizzle-orm/pg-core";
 import { uuid } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
-  id: text("id")
-    .$defaultFn(() => createId())
-    .primaryKey(), // Use cuid for unique ID
+  id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),
@@ -19,10 +16,10 @@ export const statusEnum = pgEnum("status", ["pending", "accepted", "rejected"]);
 
 export const friendshipsTable = pgTable("friendships", {
   id: uuid("id").defaultRandom().primaryKey(),
-  userId: text("user_id")
+  userId: uuid("user_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
-  friendId: text("friend_id")
+  friendId: uuid("friend_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
   status: statusEnum().default("pending").notNull(),
@@ -36,9 +33,7 @@ export const friendshipsRelations = relations(friendshipsTable, ({ one }) => ({
 }));
 
 export const conversationsTable = pgTable("conversations", {
-  id: text("id")
-    .$defaultFn(() => createId())
-    .primaryKey(), // Use cuid for unique ID
+  id: uuid("id").defaultRandom().primaryKey(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -47,14 +42,15 @@ export const convertionsRelations = relations(
   ({ many }) => ({
     participants: many(participantsTable),
     messages: many(messagesTable),
-  }),
+  })
 );
 
 export const participantsTable = pgTable("participants", {
-  userId: text("user_id")
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
-  conversationId: text("conversation_id")
+  conversationId: uuid("conversation_id")
     .notNull()
     .references(() => conversationsTable.id, { onDelete: "cascade" }),
 });
@@ -70,15 +66,16 @@ export const participantsRelations = relations(
       fields: [participantsTable.conversationId],
       references: [conversationsTable.id],
     }),
-  }),
+  })
 );
 
 export const messagesTable = pgTable("messages", {
+  id: uuid("id").defaultRandom().primaryKey(),
   content: text("content").notNull(),
-  senderId: text("sender_id")
+  senderId: uuid("sender_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
-  conversationId: text("conversation_id")
+  conversationId: uuid("conversation_id")
     .notNull()
     .references(() => conversationsTable.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
