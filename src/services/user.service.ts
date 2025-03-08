@@ -3,6 +3,7 @@ import { db } from "../db";
 import { friendshipsTable, usersTable } from "../db/schema";
 import bcrypt from "bcrypt";
 import { registerBody } from "../schemas/auth.schema";
+import { formatName } from "../utils";
 
 export async function createUser(input: registerBody) {
   const { name, email, password } = input;
@@ -11,7 +12,11 @@ export async function createUser(input: registerBody) {
   const hashedPassword = await bcrypt.hash(password, salt);
   const [user] = await db
     .insert(usersTable)
-    .values({ name, email, password: hashedPassword })
+    .values({
+      name: formatName(name),
+      email: email.toLowerCase(),
+      password: hashedPassword,
+    })
     .returning({
       id: usersTable.id,
       name: usersTable.name,
