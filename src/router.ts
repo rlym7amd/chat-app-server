@@ -10,6 +10,7 @@ import { loginSchema, registerSchema } from "./schemas/auth.schema";
 import { authenticateToken } from "./middleware/authenticateToken";
 import {
   getUserFriendListHandler,
+  getUserPendingFriendsHandler,
   getUserProfile,
 } from "./controllers/user.controller";
 import {
@@ -41,6 +42,11 @@ router.post("/auth/refresh", refreshToken);
  */
 router.get("/users/me", authenticateToken, getUserProfile);
 router.get("/users/me/friends", authenticateToken, getUserFriendListHandler);
+router.get(
+  "/users/me/friends/pending",
+  authenticateToken,
+  getUserPendingFriendsHandler,
+);
 
 /**
  * Conversations routes
@@ -48,21 +54,21 @@ router.get("/users/me/friends", authenticateToken, getUserFriendListHandler);
 router.get(
   "/conversations/:conversationId",
   authenticateToken,
-  getConversationByIdHandler
+  getConversationByIdHandler,
 );
 
 router.post(
   "/conversations",
   authenticateToken,
   validateRequest(createConversationSchema),
-  createConversationHandler
+  createConversationHandler,
 );
 
 router.post(
   "/conversations/:conversationId/messages",
   authenticateToken,
   validateRequest(createConversationMessageSchema),
-  createConversationMessageHandler
+  createConversationMessageHandler,
 );
 
 /**

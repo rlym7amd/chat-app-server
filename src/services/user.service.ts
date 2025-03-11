@@ -45,11 +45,33 @@ export async function getUserById(id: string) {
   return user;
 }
 
-export async function getUserFriendsList(userId: string) {
+export async function getUserFriends(userId: string) {
   const friendships = await db.query.friendshipsTable.findMany({
     where: and(
       eq(friendshipsTable.userId, userId),
-      eq(friendshipsTable.status, "accepted")
+      eq(friendshipsTable.status, "accepted"),
+    ),
+    with: {
+      friend: {
+        columns: {
+          id: true,
+          email: true,
+          name: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
+    },
+  });
+
+  return friendships.map((f) => f.friend);
+}
+
+export async function getUserPendingFriends(userId: string) {
+  const pendingFriendships = await db.query.friendshipsTable.findMany({
+    where: and(
+      eq(friendshipsTable.friendId, userId),
+      eq(friendshipsTable.status, "pending"),
     ),
     with: {
       user: {
@@ -64,5 +86,5 @@ export async function getUserFriendsList(userId: string) {
     },
   });
 
-  return friendships.map((f) => f.user);
+  return pendingFriendships.map((f) => f.user);
 }

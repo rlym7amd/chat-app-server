@@ -27,6 +27,10 @@ export const friendshipsTable = pgTable("friendships", {
 
 export const friendshipsRelations = relations(friendshipsTable, ({ one }) => ({
   user: one(usersTable, {
+    fields: [friendshipsTable.userId],
+    references: [usersTable.id],
+  }),
+  friend: one(usersTable, {
     fields: [friendshipsTable.friendId],
     references: [usersTable.id],
   }),
@@ -42,7 +46,7 @@ export const convertionsRelations = relations(
   ({ many }) => ({
     participants: many(participantsTable),
     messages: many(messagesTable),
-  })
+  }),
 );
 
 export const participantsTable = pgTable("participants", {
@@ -66,7 +70,7 @@ export const participantsRelations = relations(
       fields: [participantsTable.conversationId],
       references: [conversationsTable.id],
     }),
-  })
+  }),
 );
 
 export const messagesTable = pgTable("messages", {
