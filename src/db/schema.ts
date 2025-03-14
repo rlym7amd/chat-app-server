@@ -14,7 +14,7 @@ export const usersTable = pgTable("users", {
 
 export const statusEnum = pgEnum("status", ["pending", "accepted", "rejected"]);
 
-export const friendshipsTable = pgTable("friendships", {
+export const friendRequestsTable = pgTable("friend_Requests", {
   id: uuid("id").defaultRandom().primaryKey(),
   userId: uuid("user_id")
     .notNull()
@@ -25,16 +25,19 @@ export const friendshipsTable = pgTable("friendships", {
   status: statusEnum().default("pending").notNull(),
 });
 
-export const friendshipsRelations = relations(friendshipsTable, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [friendshipsTable.userId],
-    references: [usersTable.id],
+export const friendshipsRelations = relations(
+  friendRequestsTable,
+  ({ one }) => ({
+    user: one(usersTable, {
+      fields: [friendRequestsTable.userId],
+      references: [usersTable.id],
+    }),
+    friend: one(usersTable, {
+      fields: [friendRequestsTable.friendId],
+      references: [usersTable.id],
+    }),
   }),
-  friend: one(usersTable, {
-    fields: [friendshipsTable.friendId],
-    references: [usersTable.id],
-  }),
-}));
+);
 
 export const conversationsTable = pgTable("conversations", {
   id: uuid("id").defaultRandom().primaryKey(),

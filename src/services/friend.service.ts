@@ -1,16 +1,16 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "../db";
-import { friendshipsTable } from "../db/schema";
+import { friendRequestsTable } from "../db/schema";
 
 export async function getFriends(
   userId: string,
   status: "accepted" | "pending" | "rejected",
 ) {
   if (status === "pending") {
-    const friendships = await db.query.friendshipsTable.findMany({
+    const friendships = await db.query.friendRequestsTable.findMany({
       where: and(
-        eq(friendshipsTable.friendId, userId),
-        eq(friendshipsTable.status, status),
+        eq(friendRequestsTable.friendId, userId),
+        eq(friendRequestsTable.status, status),
       ),
       with: {
         user: {
@@ -28,10 +28,10 @@ export async function getFriends(
     return friendships.map((f) => f.user);
   }
 
-  const friendships = await db.query.friendshipsTable.findMany({
+  const friendships = await db.query.friendRequestsTable.findMany({
     where: and(
-      eq(friendshipsTable.userId, userId),
-      eq(friendshipsTable.status, status),
+      eq(friendRequestsTable.userId, userId),
+      eq(friendRequestsTable.status, status),
     ),
     with: {
       friend: {
@@ -48,3 +48,5 @@ export async function getFriends(
 
   return friendships.map((f) => f.friend);
 }
+
+export async function createFriendRequest() {}
