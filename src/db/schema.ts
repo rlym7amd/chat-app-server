@@ -16,10 +16,10 @@ export const statusEnum = pgEnum("status", ["pending", "accepted", "rejected"]);
 
 export const friendRequestsTable = pgTable("friend_Requests", {
   id: uuid("id").defaultRandom().primaryKey(),
-  userId: uuid("user_id")
+  senderId: uuid("sender_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
-  friendId: uuid("friend_id")
+  recipientId: uuid("recipient_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
   status: statusEnum().default("pending").notNull(),
@@ -28,12 +28,12 @@ export const friendRequestsTable = pgTable("friend_Requests", {
 export const friendshipsRelations = relations(
   friendRequestsTable,
   ({ one }) => ({
-    user: one(usersTable, {
-      fields: [friendRequestsTable.userId],
+    sender: one(usersTable, {
+      fields: [friendRequestsTable.senderId],
       references: [usersTable.id],
     }),
-    friend: one(usersTable, {
-      fields: [friendRequestsTable.friendId],
+    recipient: one(usersTable, {
+      fields: [friendRequestsTable.recipientId],
       references: [usersTable.id],
     }),
   }),

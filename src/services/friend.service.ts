@@ -9,11 +9,11 @@ export async function getFriends(
   if (status === "pending") {
     const friendships = await db.query.friendRequestsTable.findMany({
       where: and(
-        eq(friendRequestsTable.friendId, userId),
+        eq(friendRequestsTable.recipientId, userId),
         eq(friendRequestsTable.status, status),
       ),
       with: {
-        user: {
+        sender: {
           columns: {
             id: true,
             email: true,
@@ -25,16 +25,16 @@ export async function getFriends(
       },
     });
 
-    return friendships.map((f) => f.user);
+    return friendships.map((f) => f.sender);
   }
 
   const friendships = await db.query.friendRequestsTable.findMany({
     where: and(
-      eq(friendRequestsTable.userId, userId),
+      eq(friendRequestsTable.senderId, userId),
       eq(friendRequestsTable.status, status),
     ),
     with: {
-      friend: {
+      recipient: {
         columns: {
           id: true,
           email: true,
@@ -46,7 +46,7 @@ export async function getFriends(
     },
   });
 
-  return friendships.map((f) => f.friend);
+  return friendships.map((f) => f.recipient);
 }
 
 export async function createFriendRequest() {}
