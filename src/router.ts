@@ -8,11 +8,7 @@ import {
 } from "./controllers/auth.controller";
 import { loginSchema, registerSchema } from "./schemas/auth.schema";
 import { authenticateToken } from "./middleware/authenticateToken";
-import {
-  getUserFriendListHandler,
-  getUserPendingFriendsHandler,
-  getUserProfile,
-} from "./controllers/user.controller";
+import { getUserProfile } from "./controllers/user.controller";
 import {
   createConversationMessageSchema,
   createConversationSchema,
@@ -23,6 +19,7 @@ import {
   getConversationByIdHandler,
 } from "./controllers/conversation.controller";
 import { getPeersHandler } from "./controllers/participants.controller";
+import { getFriendsHanlder } from "./controllers/friend.controller";
 
 const router = Router();
 
@@ -41,12 +38,11 @@ router.post("/auth/refresh", refreshToken);
  * Users routes
  */
 router.get("/users/me", authenticateToken, getUserProfile);
-router.get("/users/me/friends", authenticateToken, getUserFriendListHandler);
-router.get(
-  "/users/me/friends/pending",
-  authenticateToken,
-  getUserPendingFriendsHandler,
-);
+
+/**
+ * Friends routes
+ */
+router.get("/friends", authenticateToken, getFriendsHanlder);
 
 /**
  * Conversations routes
