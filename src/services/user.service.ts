@@ -1,6 +1,6 @@
-import { and, eq, getTableColumns } from "drizzle-orm";
+import { eq, getTableColumns } from "drizzle-orm";
 import { db } from "../db";
-import { friendshipsTable, usersTable } from "../db/schema";
+import { usersTable } from "../db/schema";
 import bcrypt from "bcrypt";
 import { registerBody } from "../schemas/auth.schema";
 import { formatName } from "../utils";
