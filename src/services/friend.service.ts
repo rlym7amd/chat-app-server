@@ -49,4 +49,52 @@ export async function getFriends(
   return friendships.map((f) => f.recipient);
 }
 
-export async function createFriendRequest() {}
+export async function createFriendRequest(
+  senderId: string,
+  recipientId: string,
+) {
+  return await db
+    .insert(friendRequestsTable)
+    .values({ senderId, recipientId })
+    .returning();
+}
+
+export async function isExistingFriendRequest(
+  senderId: string,
+  recipientId: string,
+) {
+  const [friendRequest] = await db
+    .select()
+    .from(friendRequestsTable)
+    .where(
+      and(
+        eq(friendRequestsTable.senderId, senderId),
+        eq(friendRequestsTable.recipientId, recipientId),
+      ),
+    );
+
+  if (!friendRequest) {
+    return false;
+  }
+  return true;
+}
+
+export async function isRecipientSentRequest(
+  senderId: string,
+  recipientId: string,
+) {
+  const [friendRequest] = await db
+    .select()
+    .from(friendRequestsTable)
+    .where(
+      and(
+        eq(friendRequestsTable.senderId, senderId),
+        eq(friendRequestsTable.recipientId, recipientId),
+      ),
+    );
+
+  if (!friendRequest) {
+    return false;
+  }
+  return true;
+}

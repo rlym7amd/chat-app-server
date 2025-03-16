@@ -19,7 +19,14 @@ import {
   getConversationByIdHandler,
 } from "./controllers/conversation.controller";
 import { getPeersHandler } from "./controllers/participants.controller";
-import { getFriendsHanlder } from "./controllers/friend.controller";
+import {
+  createFriendRequestHandler,
+  getFriendsHanlder,
+} from "./controllers/friend.controller";
+import {
+  acceptFriendRequestSchema,
+  createFriendRequestSchema,
+} from "./schemas/friend.schema";
 
 const router = Router();
 
@@ -43,6 +50,12 @@ router.get("/users/me", authenticateToken, getUserProfile);
  * Friends routes
  */
 router.get("/friends", authenticateToken, getFriendsHanlder);
+router.post(
+  "/friends",
+  authenticateToken,
+  validateRequest(createFriendRequestSchema),
+  createFriendRequestHandler,
+);
 
 /**
  * Conversations routes
