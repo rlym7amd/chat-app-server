@@ -22,9 +22,10 @@ import { getPeersHandler } from "./controllers/participants.controller";
 import {
   createFriendRequestHandler,
   getFriendsHanlder,
+  updateFriendRequestHandler,
 } from "./controllers/friend.controller";
 import {
-  acceptFriendRequestSchema,
+  updateFriendRequestSchema,
   createFriendRequestSchema,
 } from "./schemas/friend.schema";
 
@@ -55,6 +56,12 @@ router.post(
   authenticateToken,
   validateRequest(createFriendRequestSchema),
   createFriendRequestHandler,
+);
+router.patch(
+  "/friends",
+  authenticateToken,
+  validateRequest(updateFriendRequestSchema),
+  updateFriendRequestHandler,
 );
 
 /**

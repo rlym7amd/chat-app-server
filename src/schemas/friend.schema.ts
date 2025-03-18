@@ -10,12 +10,17 @@ export type CreateFriendRequestBody = z.infer<
   typeof createFriendRequestSchema.shape.body
 >;
 
-export const acceptFriendRequestSchema = z.object({
+export const updateFriendRequestSchema = z.object({
   body: z.object({
-    status: z.string().min(1, "Email is required"),
+    senderId: z.string().min(1, "senderId is required"),
+    status: z.union([
+      z.literal("accepted"),
+      z.literal("rejected"),
+      z.literal("pending"),
+    ]),
   }),
 });
 
-export type AcceptFriendRequestBody = z.infer<
-  typeof acceptFriendRequestSchema.shape.body
+export type UpdateFriendRequestBody = z.infer<
+  typeof updateFriendRequestSchema.shape.body
 >;

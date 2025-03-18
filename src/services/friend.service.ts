@@ -98,3 +98,27 @@ export async function isRecipientSentRequest(
   }
   return true;
 }
+
+export async function updateFriendRequest(
+  senderId: string,
+  recipientId: string,
+  status: "accepted" | "rejected" | "pending",
+) {
+  if (status === "accepted") {
+    await db.insert(friendRequestsTable).values({
+      senderId: recipientId,
+      recipientId: senderId,
+      status,
+    });
+  }
+
+  await db
+    .update(friendRequestsTable)
+    .set({ status })
+    .where(
+      and(
+        eq(friendRequestsTable.senderId, senderId),
+        eq(friendRequestsTable.recipientId, recipientId),
+      ),
+    );
+}

@@ -4,8 +4,12 @@ import {
   getFriends,
   isExistingFriendRequest,
   isRecipientSentRequest,
+  updateFriendRequest,
 } from "../services/friend.service";
-import { CreateFriendRequestBody } from "../schemas/friend.schema";
+import {
+  CreateFriendRequestBody,
+  UpdateFriendRequestBody,
+} from "../schemas/friend.schema";
 import { getUserByEmail } from "../services/user.service";
 
 export async function getFriendsHanlder(req: Request, res: Response) {
@@ -37,7 +41,9 @@ export async function createFriendRequestHandler(
 
     const exists = await isExistingFriendRequest(senderId, recipient.id);
     if (exists) {
-      res.status(409).json({ message: "Conversation already exits" });
+      res
+        .status(409)
+        .json({ message: `${recipient.name} is already a friend` });
       return;
     }
 
@@ -55,6 +61,21 @@ export async function createFriendRequestHandler(
     await createFriendRequest(senderId, recipient.id);
 
     res.status(201).json({ message: "Friend request sent!" });
+  } catch {
+    res.status(500).json({ message: "Server error!" });
+  }
+}
+
+export async function updateFriendRequestHandler(
+  req: Request<{}, {}, UpdateFriendRequestBody>,
+  res: Response,
+) {
+  try {
+    const recipientId = res.locals.user.id as string;
+    const { status, senderId } = req.body;
+    await updateFriendRequest(senderId, recipientId, status);
+
+    res.json({ message: `Friend request ${status}!` });
   } catch {
     res.status(500).json({ message: "Server error!" });
   }
