@@ -1,16 +1,16 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import { db } from "../db";
 import { friendRequestsTable } from "../db/schema";
 
 export async function getFriends(
   userId: string,
-  status: "accepted" | "pending" | "rejected",
+  status: "accepted" | "pending" | "rejected"
 ) {
   if (status === "pending") {
     const friendships = await db.query.friendRequestsTable.findMany({
       where: and(
         eq(friendRequestsTable.recipientId, userId),
-        eq(friendRequestsTable.status, status),
+        eq(friendRequestsTable.status, status)
       ),
       with: {
         sender: {
@@ -31,7 +31,7 @@ export async function getFriends(
   const friendships = await db.query.friendRequestsTable.findMany({
     where: and(
       eq(friendRequestsTable.senderId, userId),
-      eq(friendRequestsTable.status, status),
+      eq(friendRequestsTable.status, status)
     ),
     with: {
       recipient: {
@@ -51,7 +51,7 @@ export async function getFriends(
 
 export async function createFriendRequest(
   senderId: string,
-  recipientId: string,
+  recipientId: string
 ) {
   return await db
     .insert(friendRequestsTable)
@@ -61,7 +61,7 @@ export async function createFriendRequest(
 
 export async function isExistingFriendRequest(
   senderId: string,
-  recipientId: string,
+  recipientId: string
 ) {
   const [friendRequest] = await db
     .select()
@@ -69,8 +69,8 @@ export async function isExistingFriendRequest(
     .where(
       and(
         eq(friendRequestsTable.senderId, senderId),
-        eq(friendRequestsTable.recipientId, recipientId),
-      ),
+        eq(friendRequestsTable.recipientId, recipientId)
+      )
     );
 
   if (!friendRequest) {
@@ -81,7 +81,7 @@ export async function isExistingFriendRequest(
 
 export async function isRecipientSentRequest(
   senderId: string,
-  recipientId: string,
+  recipientId: string
 ) {
   const [friendRequest] = await db
     .select()
@@ -89,8 +89,8 @@ export async function isRecipientSentRequest(
     .where(
       and(
         eq(friendRequestsTable.senderId, senderId),
-        eq(friendRequestsTable.recipientId, recipientId),
-      ),
+        eq(friendRequestsTable.recipientId, recipientId)
+      )
     );
 
   if (!friendRequest) {
@@ -102,7 +102,7 @@ export async function isRecipientSentRequest(
 export async function updateFriendRequest(
   senderId: string,
   recipientId: string,
-  status: "accepted" | "rejected" | "pending",
+  status: "accepted" | "rejected" | "pending"
 ) {
   if (status === "accepted") {
     await db.insert(friendRequestsTable).values({
@@ -118,7 +118,24 @@ export async function updateFriendRequest(
     .where(
       and(
         eq(friendRequestsTable.senderId, senderId),
-        eq(friendRequestsTable.recipientId, recipientId),
-      ),
+        eq(friendRequestsTable.recipientId, recipientId)
+      )
+    );
+}
+
+export async function deleteFriendRequest(userId: string, friendId: string) {
+  await db
+    .delete(friendRequestsTable)
+    .where(
+      or(
+        and(
+          eq(friendRequestsTable.senderId, userId),
+          eq(friendRequestsTable.recipientId, friendId)
+        ),
+        and(
+          eq(friendRequestsTable.senderId, friendId),
+          eq(friendRequestsTable.recipientId, userId)
+        )
+      )
     );
 }

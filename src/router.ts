@@ -21,12 +21,14 @@ import {
 import { getPeersHandler } from "./controllers/participants.controller";
 import {
   createFriendRequestHandler,
+  deleteFriendRequestHandler,
   getFriendsHanlder,
   updateFriendRequestHandler,
 } from "./controllers/friend.controller";
 import {
   updateFriendRequestSchema,
   createFriendRequestSchema,
+  deleteFriendRequestSchema,
 } from "./schemas/friend.schema";
 
 const router = Router();
@@ -55,13 +57,19 @@ router.post(
   "/friends",
   authenticateToken,
   validateRequest(createFriendRequestSchema),
-  createFriendRequestHandler,
+  createFriendRequestHandler
 );
 router.patch(
   "/friends",
   authenticateToken,
   validateRequest(updateFriendRequestSchema),
-  updateFriendRequestHandler,
+  updateFriendRequestHandler
+);
+router.delete(
+  "/friends",
+  authenticateToken,
+  validateRequest(deleteFriendRequestSchema),
+  deleteFriendRequestHandler
 );
 
 /**
@@ -70,21 +78,21 @@ router.patch(
 router.get(
   "/conversations/:conversationId",
   authenticateToken,
-  getConversationByIdHandler,
+  getConversationByIdHandler
 );
 
 router.post(
   "/conversations",
   authenticateToken,
   validateRequest(createConversationSchema),
-  createConversationHandler,
+  createConversationHandler
 );
 
 router.post(
   "/conversations/:conversationId/messages",
   authenticateToken,
   validateRequest(createConversationMessageSchema),
-  createConversationMessageHandler,
+  createConversationMessageHandler
 );
 
 /**

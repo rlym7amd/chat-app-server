@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import {
   createFriendRequest,
+  deleteFriendRequest,
   getFriends,
   isExistingFriendRequest,
   isRecipientSentRequest,
@@ -8,6 +9,7 @@ import {
 } from "../services/friend.service";
 import {
   CreateFriendRequestBody,
+  DeleteFriendRequestBody,
   UpdateFriendRequestBody,
 } from "../schemas/friend.schema";
 import { getUserByEmail } from "../services/user.service";
@@ -27,7 +29,7 @@ export async function getFriendsHanlder(req: Request, res: Response) {
 
 export async function createFriendRequestHandler(
   req: Request<{}, {}, CreateFriendRequestBody>,
-  res: Response,
+  res: Response
 ) {
   try {
     const senderId = res.locals.user.id as string;
@@ -49,7 +51,7 @@ export async function createFriendRequestHandler(
 
     const recipientSentRequest = await isRecipientSentRequest(
       recipient.id,
-      senderId,
+      senderId
     );
     if (recipientSentRequest) {
       res.status(400).json({
@@ -68,7 +70,7 @@ export async function createFriendRequestHandler(
 
 export async function updateFriendRequestHandler(
   req: Request<{}, {}, UpdateFriendRequestBody>,
-  res: Response,
+  res: Response
 ) {
   try {
     const recipientId = res.locals.user.id as string;
@@ -76,6 +78,22 @@ export async function updateFriendRequestHandler(
     await updateFriendRequest(senderId, recipientId, status);
 
     res.json({ message: `Friend request ${status}!` });
+  } catch {
+    res.status(500).json({ message: "Server error!" });
+  }
+}
+
+export async function deleteFriendRequestHandler(
+  req: Request<{}, {}, DeleteFriendRequestBody>,
+  res: Response
+) {
+  try {
+    const friendId = req.body.friendId;
+    const userId = res.locals.user.id;
+
+    await deleteFriendRequest(userId, friendId);
+
+    res.json({ message: "Friend deleted successfully!" });
   } catch {
     res.status(500).json({ message: "Server error!" });
   }

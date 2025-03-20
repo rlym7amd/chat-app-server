@@ -24,3 +24,13 @@ export const updateFriendRequestSchema = z.object({
 export type UpdateFriendRequestBody = z.infer<
   typeof updateFriendRequestSchema.shape.body
 >;
+
+export const deleteFriendRequestSchema = z.object({
+  body: z.object({
+    friendId: z.string().min(1, "friendId is required"),
+  }),
+});
+
+export type DeleteFriendRequestBody = z.infer<
+  typeof deleteFriendRequestSchema.shape.body
+>;
