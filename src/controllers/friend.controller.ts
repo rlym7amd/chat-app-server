@@ -41,6 +41,13 @@ export async function createFriendRequestHandler(
       return;
     }
 
+    if (recipient.id === senderId) {
+      res
+        .status(400)
+        .json({ message: "You can not send a friend request to yourself!" });
+      return;
+    }
+
     const exists = await isExistingFriendRequest(senderId, recipient.id);
     if (exists) {
       res
