@@ -49,11 +49,27 @@ export async function createFriendRequestHandler(
       return;
     }
 
-    const exists = await isExistingFriendRequest(senderId, recipient.id);
-    if (exists) {
+    const PendingFriendRequestExists = await isExistingFriendRequest(
+      senderId,
+      recipient.id,
+      "pending"
+    );
+    if (PendingFriendRequestExists) {
       res
         .status(409)
-        .json({ message: `${recipient.name} is already a friend` });
+        .json({ message: `You Already sent a request to ${recipient.name}` });
+      return;
+    }
+
+    const isFriend = await isExistingFriendRequest(
+      senderId,
+      recipient.id,
+      "accepted"
+    );
+    if (isFriend) {
+      res.status(409).json({
+        message: `${recipient.name} is already a friend`,
+      });
       return;
     }
 

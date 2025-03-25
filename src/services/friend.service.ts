@@ -34,7 +34,8 @@ export async function createFriendRequest(
 
 export async function isExistingFriendRequest(
   senderId: string,
-  recipientId: string
+  recipientId: string,
+  status: "accepted" | "rejected" | "pending"
 ) {
   const [friendRequest] = await db
     .select()
@@ -43,7 +44,7 @@ export async function isExistingFriendRequest(
       and(
         eq(friendRequestsTable.senderId, senderId),
         eq(friendRequestsTable.recipientId, recipientId),
-        eq(friendRequestsTable.status, "accepted")
+        eq(friendRequestsTable.status, status)
       )
     );
 
