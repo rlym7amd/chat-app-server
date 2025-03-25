@@ -2,39 +2,14 @@ import { and, eq, or } from "drizzle-orm";
 import { db } from "../db";
 import { friendRequestsTable } from "../db/schema";
 
-export async function getFriends(
-  userId: string,
-  status: "accepted" | "pending" | "rejected"
-) {
-  if (status === "pending") {
-    const friendships = await db.query.friendRequestsTable.findMany({
-      where: and(
-        eq(friendRequestsTable.recipientId, userId),
-        eq(friendRequestsTable.status, status)
-      ),
-      with: {
-        sender: {
-          columns: {
-            id: true,
-            email: true,
-            name: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        },
-      },
-    });
-
-    return friendships.map((f) => f.sender);
-  }
-
-  const friendships = await db.query.friendRequestsTable.findMany({
+export async function getFriendRequests(userId: string) {
+  return await db.query.friendRequestsTable.findMany({
     where: and(
-      eq(friendRequestsTable.senderId, userId),
-      eq(friendRequestsTable.status, status)
+      eq(friendRequestsTable.recipientId, userId),
+      eq(friendRequestsTable.status, "pending")
     ),
     with: {
-      recipient: {
+      sender: {
         columns: {
           id: true,
           email: true,
@@ -45,8 +20,6 @@ export async function getFriends(
       },
     },
   });
-
-  return friendships.map((f) => f.recipient);
 }
 
 export async function createFriendRequest(
@@ -69,7 +42,8 @@ export async function isExistingFriendRequest(
     .where(
       and(
         eq(friendRequestsTable.senderId, senderId),
-        eq(friendRequestsTable.recipientId, recipientId)
+        eq(friendRequestsTable.recipientId, recipientId),
+        eq(friendRequestsTable.status, "accepted")
       )
     );
 
@@ -100,27 +74,22 @@ export async function isRecipientSentRequest(
 }
 
 export async function updateFriendRequest(
-  senderId: string,
-  recipientId: string,
+  friendRequestId: string,
   status: "accepted" | "rejected" | "pending"
 ) {
-  if (status === "accepted") {
+  const [friendRequest] = await db
+    .update(friendRequestsTable)
+    .set({ status })
+    .where(eq(friendRequestsTable.id, friendRequestId))
+    .returning();
+
+  if (status === "accepted" && friendRequest) {
     await db.insert(friendRequestsTable).values({
-      senderId: recipientId,
-      recipientId: senderId,
+      senderId: friendRequest.recipientId,
+      recipientId: friendRequest.senderId,
       status,
     });
   }
-
-  await db
-    .update(friendRequestsTable)
-    .set({ status })
-    .where(
-      and(
-        eq(friendRequestsTable.senderId, senderId),
-        eq(friendRequestsTable.recipientId, recipientId)
-      )
-    );
 }
 
 export async function deleteFriendRequest(userId: string, friendId: string) {
@@ -138,4 +107,25 @@ export async function deleteFriendRequest(userId: string, friendId: string) {
         )
       )
     );
+}
+
+export async function getFriends(userId: string) {
+  const acceptedFriendRequests = await db.query.friendRequestsTable.findMany({
+    where: and(
+      eq(friendRequestsTable.senderId, userId),
+      eq(friendRequestsTable.status, "accepted")
+    ),
+    with: {
+      recipient: {
+        columns: {
+          id: true,
+          email: true,
+          name: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
+    },
+  });
+  return acceptedFriendRequests.map((f) => f.recipient);
 }

@@ -25,7 +25,7 @@ export const friendRequestsTable = pgTable("friend_Requests", {
   status: statusEnum().default("pending").notNull(),
 });
 
-export const friendshipsRelations = relations(
+export const friendRequestsRelations = relations(
   friendRequestsTable,
   ({ one }) => ({
     sender: one(usersTable, {
@@ -36,7 +36,7 @@ export const friendshipsRelations = relations(
       fields: [friendRequestsTable.recipientId],
       references: [usersTable.id],
     }),
-  }),
+  })
 );
 
 export const conversationsTable = pgTable("conversations", {
@@ -49,7 +49,7 @@ export const convertionsRelations = relations(
   ({ many }) => ({
     participants: many(participantsTable),
     messages: many(messagesTable),
-  }),
+  })
 );
 
 export const participantsTable = pgTable("participants", {
@@ -73,7 +73,7 @@ export const participantsRelations = relations(
       fields: [participantsTable.conversationId],
       references: [conversationsTable.id],
     }),
-  }),
+  })
 );
 
 export const messagesTable = pgTable("messages", {

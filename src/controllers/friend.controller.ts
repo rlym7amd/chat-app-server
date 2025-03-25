@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import {
   createFriendRequest,
   deleteFriendRequest,
+  getFriendRequests,
   getFriends,
   isExistingFriendRequest,
   isRecipientSentRequest,
@@ -11,17 +12,17 @@ import {
   CreateFriendRequestBody,
   DeleteFriendRequestBody,
   UpdateFriendRequestBody,
+  UpdateFriendRequestParams,
 } from "../schemas/friend.schema";
 import { getUserByEmail } from "../services/user.service";
 
-export async function getFriendsHanlder(req: Request, res: Response) {
+export async function getFriendRequestsHanlder(req: Request, res: Response) {
   try {
-    const status = (req.query.status as "rejected" | "pending") || "accepted";
     const userId = res.locals.user.id as string;
 
-    const friends = await getFriends(userId, status);
+    const friendRequests = await getFriendRequests(userId);
 
-    res.json({ friends });
+    res.json({ friendRequests });
   } catch {
     res.status(500).json({ message: "Server error" });
   }
@@ -61,7 +62,7 @@ export async function createFriendRequestHandler(
       senderId
     );
     if (recipientSentRequest) {
-      res.status(400).json({
+      res.status(409).json({
         message: `${recipient.name} already sent you a friend request`,
       });
       return;
@@ -76,13 +77,13 @@ export async function createFriendRequestHandler(
 }
 
 export async function updateFriendRequestHandler(
-  req: Request<{}, {}, UpdateFriendRequestBody>,
+  req: Request<UpdateFriendRequestParams, {}, UpdateFriendRequestBody>,
   res: Response
 ) {
   try {
-    const recipientId = res.locals.user.id as string;
-    const { status, senderId } = req.body;
-    await updateFriendRequest(senderId, recipientId, status);
+    const { friendRequestId } = req.params;
+    const { status } = req.body;
+    await updateFriendRequest(friendRequestId, status);
 
     res.json({ message: `Friend request ${status}!` });
   } catch {
@@ -101,6 +102,17 @@ export async function deleteFriendRequestHandler(
     await deleteFriendRequest(userId, friendId);
 
     res.json({ message: "Friend deleted successfully!" });
+  } catch {
+    res.status(500).json({ message: "Server error!" });
+  }
+}
+
+export async function getFriendsHandler(req: Request, res: Response) {
+  try {
+    const userId = res.locals.user.id as string;
+    const friends = await getFriends(userId);
+
+    res.json({ friends });
   } catch {
     res.status(500).json({ message: "Server error!" });
   }

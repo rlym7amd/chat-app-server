@@ -22,7 +22,8 @@ import { getPeersHandler } from "./controllers/participants.controller";
 import {
   createFriendRequestHandler,
   deleteFriendRequestHandler,
-  getFriendsHanlder,
+  getFriendRequestsHanlder,
+  getFriendsHandler,
   updateFriendRequestHandler,
 } from "./controllers/friend.controller";
 import {
@@ -50,27 +51,32 @@ router.post("/auth/refresh", refreshToken);
 router.get("/users/me", authenticateToken, getUserProfile);
 
 /**
- * Friends routes
+ * Friend requests routes
  */
-router.get("/friends", authenticateToken, getFriendsHanlder);
+router.get("/friend-requests", authenticateToken, getFriendRequestsHanlder);
 router.post(
-  "/friends",
+  "/friend-requests",
   authenticateToken,
   validateRequest(createFriendRequestSchema),
   createFriendRequestHandler
 );
 router.patch(
-  "/friends",
+  "/friend-requests/:friendRequestId",
   authenticateToken,
   validateRequest(updateFriendRequestSchema),
   updateFriendRequestHandler
 );
 router.delete(
-  "/friends",
+  "/friend-requests",
   authenticateToken,
   validateRequest(deleteFriendRequestSchema),
   deleteFriendRequestHandler
 );
+
+/**
+ * Friend requests routes
+ */
+router.get("/friends", authenticateToken, getFriendsHandler);
 
 /**
  * Conversations routes

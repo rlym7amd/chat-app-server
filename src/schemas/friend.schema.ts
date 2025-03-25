@@ -12,17 +12,23 @@ export type CreateFriendRequestBody = z.infer<
 
 export const updateFriendRequestSchema = z.object({
   body: z.object({
-    senderId: z.string().min(1, "senderId is required"),
     status: z.union([
       z.literal("accepted"),
       z.literal("rejected"),
       z.literal("pending"),
     ]),
   }),
+  params: z.object({
+    friendRequestId: z.string().min(1, "friendRequestId params is required"),
+  }),
 });
 
 export type UpdateFriendRequestBody = z.infer<
   typeof updateFriendRequestSchema.shape.body
+>;
+
+export type UpdateFriendRequestParams = z.infer<
+  typeof updateFriendRequestSchema.shape.params
 >;
 
 export const deleteFriendRequestSchema = z.object({
