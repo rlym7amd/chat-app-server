@@ -61,8 +61,16 @@ export const conversationsTable = pgTable(
 
 export const convertionsRelations = relations(
   conversationsTable,
-  ({ many }) => ({
+  ({ many, one }) => ({
     messages: many(messagesTable),
+    creator: one(usersTable, {
+      fields: [conversationsTable.creatorId],
+      references: [usersTable.id],
+    }),
+    recipient: one(usersTable, {
+      fields: [conversationsTable.recipientId],
+      references: [usersTable.id],
+    }),
   })
 );
 

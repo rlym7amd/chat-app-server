@@ -43,10 +43,16 @@ export async function existingConversation(
 }
 
 export async function getConversations(creatorId: string) {
-  return await db
-    .select()
-    .from(conversationsTable)
-    .where(eq(conversationsTable.creatorId, creatorId));
+  return await db.query.conversationsTable.findMany({
+    where: eq(conversationsTable.creatorId, creatorId),
+    with: {
+      recipient: {
+        columns: {
+          password: false,
+        },
+      },
+    },
+  });
 }
 
 export async function createConversationMessage(
