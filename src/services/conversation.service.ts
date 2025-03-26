@@ -42,6 +42,13 @@ export async function existingConversation(
   return null;
 }
 
+export async function getConversations(creatorId: string) {
+  return await db
+    .select()
+    .from(conversationsTable)
+    .where(eq(conversationsTable.creatorId, creatorId));
+}
+
 export async function createConversationMessage(
   body: createConversationMessageBody,
   conversationId: string,

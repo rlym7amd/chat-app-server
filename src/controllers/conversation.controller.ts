@@ -4,6 +4,7 @@ import {
   createConversationMessage,
   getConversationById,
   existingConversation,
+  getConversations,
 } from "../services/conversation.service";
 import { log } from "../logger";
 import { CreateConversationBody } from "../schemas/conversation.schema";
@@ -21,12 +22,10 @@ export async function createConversationHandler(
       recipientId
     );
     if (exitingConversation) {
-      res
-        .status(409)
-        .json({
-          message: "Conversation already exits",
-          conversation: existingConversation,
-        });
+      res.status(409).json({
+        message: "Conversation already exits",
+        conversation: existingConversation,
+      });
       return;
     }
 
@@ -56,6 +55,17 @@ export async function createConversationMessageHandler(
   await createConversationMessage(body, conversationId, userId);
 
   res.status(201).json({ message: "Message created successfully" });
+}
+
+export async function getConversationsHandler(req: Request, res: Response) {
+  try {
+    const creatorId = res.locals.user.id as string;
+    const conversations = await getConversations(creatorId);
+
+    res.json({ conversations });
+  } catch {
+    res.status(500).json({ message: "Server error" });
+  }
 }
 
 export async function getConversationByIdHandler(req: Request, res: Response) {

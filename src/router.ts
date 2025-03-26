@@ -17,6 +17,7 @@ import {
   createConversationHandler,
   createConversationMessageHandler,
   getConversationByIdHandler,
+  getConversationsHandler,
 } from "./controllers/conversation.controller";
 import {
   createFriendRequestHandler,
@@ -80,6 +81,7 @@ router.get("/friends", authenticateToken, getFriendsHandler);
 /**
  * Conversations routes
  */
+router.get("/conversations", authenticateToken, getConversationsHandler);
 router.get(
   "/conversations/:conversationId",
   authenticateToken,
