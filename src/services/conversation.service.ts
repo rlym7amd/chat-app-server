@@ -1,54 +1,45 @@
-import { eq, inArray, sql } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "../db";
-import {
-  conversationsTable,
-  messagesTable,
-  participantsTable,
-} from "../db/schema";
-import {
-  createConversationBody,
-  createConversationMessageBody,
-} from "../schemas/conversation.schema";
+import { conversationsTable, messagesTable } from "../db/schema";
+import { createConversationMessageBody } from "../schemas/conversation.schema";
 
 export async function createConversation(
-  userId: string,
-  body: createConversationBody
+  creatorId: string,
+  recipientId: string
 ) {
   const [conversation] = await db
     .insert(conversationsTable)
-    .values({})
+    .values({
+      creatorId,
+      recipientId,
+    })
     .returning();
 
   if (!conversation) return;
 
-  const participantsRecord = [
-    { userId, conversationId: conversation.id },
-    { userId: body.receiptId, conversationId: conversation.id },
-  ];
-
-  await db.insert(participantsTable).values(participantsRecord);
-
-  return {
-    conversationId: conversation.id,
-    participants: [userId, body.receiptId],
-  };
+  return conversation;
 }
 
-export async function isExistingConversation(participants: string[]) {
-  const [existingConversation] = await db
-    .select({ conversationId: participantsTable.conversationId })
-    .from(participantsTable)
-    .where(inArray(participantsTable.userId, participants))
-    .groupBy(participantsTable.conversationId)
-    .having(
-      sql`COUNT(DISTINCT ${participantsTable.userId}) = ${participants.length}`
-    );
+export async function existingConversation(
+  creatorId: string,
+  recipientId: string
+) {
+  const existingConversation = await db
+    .select()
+    .from(conversationsTable)
+    .where(
+      and(
+        eq(conversationsTable.creatorId, creatorId),
+        eq(conversationsTable.recipientId, recipientId)
+      )
+    )
+    .limit(1);
 
-  if (!existingConversation?.conversationId) {
-    return false;
+  if (existingConversation.length > 0) {
+    return existingConversation[0];
   }
 
-  return true;
+  return null;
 }
 
 export async function createConversationMessage(

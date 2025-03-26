@@ -2,11 +2,11 @@ import z from "zod";
 
 export const createConversationSchema = z.object({
   body: z.object({
-    receiptId: z.string().min(1, "A receiptId is required"),
+    recipientId: z.string().min(1, "A recipientId is required"),
   }),
 });
 
-export type createConversationBody = z.infer<
+export type CreateConversationBody = z.infer<
   typeof createConversationSchema.shape.body
 >;
 

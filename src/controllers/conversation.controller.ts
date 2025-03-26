@@ -3,22 +3,38 @@ import {
   createConversation,
   createConversationMessage,
   getConversationById,
-  isExistingConversation,
+  existingConversation,
 } from "../services/conversation.service";
 import { log } from "../logger";
+import { CreateConversationBody } from "../schemas/conversation.schema";
 
-export async function createConversationHandler(req: Request, res: Response) {
+export async function createConversationHandler(
+  req: Request<{}, {}, CreateConversationBody>,
+  res: Response
+) {
   try {
-    const userId = res.locals.user.id as string;
-    const exits = await isExistingConversation([userId, req.body.receiptId]);
-    if (exits) {
-      res.status(409).json({ message: "Conversation already exits" });
+    const creatorId = res.locals.user.id as string;
+    const recipientId = req.body.recipientId;
+
+    const exitingConversation = await existingConversation(
+      creatorId,
+      recipientId
+    );
+    if (exitingConversation) {
+      res
+        .status(409)
+        .json({
+          message: "Conversation already exits",
+          conversation: existingConversation,
+        });
       return;
     }
 
-    await createConversation(userId, req.body);
+    const conversation = await createConversation(creatorId, recipientId);
 
-    res.status(201).json({ message: "Conversation created successfully" });
+    res
+      .status(201)
+      .json({ message: "Conversation created successfully", conversation });
   } catch (err: any) {
     log.error(`Database error: ${err.message}`);
     res.status(500).json({ message: "Server error" });

@@ -18,7 +18,6 @@ import {
   createConversationMessageHandler,
   getConversationByIdHandler,
 } from "./controllers/conversation.controller";
-import { getPeersHandler } from "./controllers/participants.controller";
 import {
   createFriendRequestHandler,
   deleteFriendRequestHandler,
@@ -100,10 +99,5 @@ router.post(
   validateRequest(createConversationMessageSchema),
   createConversationMessageHandler
 );
-
-/**
- * Participants routes
- */
-router.get("/participants/peers", authenticateToken, getPeersHandler);
 
 export default router;
