@@ -3,8 +3,8 @@ import {
   createConversation,
   createConversationMessage,
   getConversationById,
-  existingConversation,
   getConversations,
+  getExistingConversation,
 } from "../services/conversation.service";
 import { log } from "../logger";
 import { CreateConversationBody } from "../schemas/conversation.schema";
@@ -17,11 +17,11 @@ export async function createConversationHandler(
     const creatorId = res.locals.user.id as string;
     const recipientId = req.body.recipientId;
 
-    const exitingConversation = await existingConversation(
+    const existingConversation = await getExistingConversation(
       creatorId,
       recipientId
     );
-    if (exitingConversation) {
+    if (existingConversation) {
       res.status(409).json({
         message: "Conversation already exits",
         conversation: existingConversation,

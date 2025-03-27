@@ -15,12 +15,10 @@ export async function createConversation(
     })
     .returning();
 
-  if (!conversation) return;
-
   return conversation;
 }
 
-export async function existingConversation(
+export async function getExistingConversation(
   creatorId: string,
   recipientId: string
 ) {
@@ -38,8 +36,6 @@ export async function existingConversation(
   if (existingConversation.length > 0) {
     return existingConversation[0];
   }
-
-  return null;
 }
 
 export async function getConversations(creatorId: string) {
