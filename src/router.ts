@@ -21,7 +21,7 @@ import {
 } from "./controllers/conversation.controller";
 import {
   createFriendRequestHandler,
-  deleteFriendRequestHandler,
+  deleteFriendHandler,
   getFriendRequestsHanlder,
   getFriendsHandler,
   updateFriendRequestHandler,
@@ -29,7 +29,7 @@ import {
 import {
   updateFriendRequestSchema,
   createFriendRequestSchema,
-  deleteFriendRequestSchema,
+  deleteFriendSchema,
 } from "./schemas/friend.schema";
 
 const router = Router();
@@ -66,17 +66,17 @@ router.patch(
   validateRequest(updateFriendRequestSchema),
   updateFriendRequestHandler
 );
-router.delete(
-  "/friend-requests",
-  authenticateToken,
-  validateRequest(deleteFriendRequestSchema),
-  deleteFriendRequestHandler
-);
 
 /**
  * Friend requests routes
  */
 router.get("/friends", authenticateToken, getFriendsHandler);
+router.delete(
+  "/friends/:friendId",
+  authenticateToken,
+  validateRequest(deleteFriendSchema),
+  deleteFriendHandler
+);
 
 /**
  * Conversations routes

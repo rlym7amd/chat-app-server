@@ -31,12 +31,12 @@ export type UpdateFriendRequestParams = z.infer<
   typeof updateFriendRequestSchema.shape.params
 >;
 
-export const deleteFriendRequestSchema = z.object({
-  body: z.object({
+export const deleteFriendSchema = z.object({
+  params: z.object({
     friendId: z.string().min(1, "friendId is required"),
   }),
 });
 
-export type DeleteFriendRequestBody = z.infer<
-  typeof deleteFriendRequestSchema.shape.body
+export type DeleteFriendParams = z.infer<
+  typeof deleteFriendSchema.shape.params
 >;

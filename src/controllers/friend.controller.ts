@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import {
   createFriendRequest,
-  deleteFriendRequest,
+  deleteFriend,
   getFriendRequests,
   getFriends,
   isExistingFriendRequest,
@@ -10,7 +10,7 @@ import {
 } from "../services/friend.service";
 import {
   CreateFriendRequestBody,
-  DeleteFriendRequestBody,
+  DeleteFriendParams,
   UpdateFriendRequestBody,
   UpdateFriendRequestParams,
 } from "../schemas/friend.schema";
@@ -107,15 +107,15 @@ export async function updateFriendRequestHandler(
   }
 }
 
-export async function deleteFriendRequestHandler(
-  req: Request<{}, {}, DeleteFriendRequestBody>,
+export async function deleteFriendHandler(
+  req: Request<DeleteFriendParams>,
   res: Response
 ) {
   try {
-    const friendId = req.body.friendId;
-    const userId = res.locals.user.id;
+    const { friendId } = req.params;
+    const userId = res.locals.user.id as string;
 
-    await deleteFriendRequest(userId, friendId);
+    await deleteFriend(userId, friendId);
 
     res.json({ message: "Friend deleted successfully!" });
   } catch {

@@ -93,7 +93,7 @@ export async function updateFriendRequest(
   }
 }
 
-export async function deleteFriendRequest(userId: string, friendId: string) {
+export async function deleteFriend(userId: string, friendId: string) {
   await db
     .delete(friendRequestsTable)
     .where(
