@@ -11,7 +11,7 @@ import { CreateConversationBody } from "../schemas/conversation.schema";
 
 export async function createConversationHandler(
   req: Request<{}, {}, CreateConversationBody>,
-  res: Response
+  res: Response,
 ) {
   try {
     const creatorId = res.locals.user.id as string;
@@ -19,7 +19,7 @@ export async function createConversationHandler(
 
     const existingConversation = await getExistingConversation(
       creatorId,
-      recipientId
+      recipientId,
     );
     if (existingConversation) {
       res.status(409).json({
@@ -42,7 +42,7 @@ export async function createConversationHandler(
 
 export async function createConversationMessageHandler(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   const body = req.body;
   const { conversationId } = req.params;
@@ -59,8 +59,8 @@ export async function createConversationMessageHandler(
 
 export async function getConversationsHandler(req: Request, res: Response) {
   try {
-    const creatorId = res.locals.user.id as string;
-    const conversations = await getConversations(creatorId);
+    const userId = res.locals.user.id as string;
+    const conversations = await getConversations(userId);
 
     res.json({ conversations });
   } catch {
