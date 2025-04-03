@@ -46,9 +46,9 @@ router.post("/auth/logout", logoutUser);
 router.post("/auth/refresh", refreshToken);
 
 /**
- * Users routes
+ * current user route
  */
-router.get("/users/me", authenticateToken, getUserProfile);
+router.get("/current-user", authenticateToken, getUserProfile);
 
 /**
  * Friend requests routes
