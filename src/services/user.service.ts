@@ -2,10 +2,10 @@ import { eq, getTableColumns } from "drizzle-orm";
 import { db } from "../db";
 import { usersTable } from "../db/schema";
 import bcrypt from "bcrypt";
-import { registerBody } from "../schemas/auth.schema";
+import { RegisterBody } from "../schemas/auth.schema";
 import { formatName } from "../utils";
 
-export async function createUser(input: registerBody) {
+export async function createUser(input: RegisterBody) {
   const { name, email, password } = input;
 
   const salt = await bcrypt.genSalt(10);

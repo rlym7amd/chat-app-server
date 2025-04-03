@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { createUser, getUserByEmail } from "../services/user.service";
 import { signJWT, validatePassword, verifyJwt } from "../utils";
 import { log } from "../logger";
+import { LoginBody } from "../schemas/auth.schema";
 
 const { ACCESS_TOKEN_TTL, REFRESH_TOKEN_TTL } = process.env;
 
@@ -25,9 +26,7 @@ export async function registerUser(req: Request, res: Response) {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    res.status(201).json({
-      message: "User registered successfully",
-    });
+    res.status(201).json(user);
   } catch (err: any) {
     log.error(`Database error: ${err.message}`);
     // PostgreSQL unique violation error code
@@ -39,7 +38,10 @@ export async function registerUser(req: Request, res: Response) {
   }
 }
 
-export async function loginUser(req: Request, res: Response) {
+export async function loginUser(
+  req: Request<{}, {}, LoginBody>,
+  res: Response
+) {
   try {
     const { email, password } = req.body;
 
@@ -49,7 +51,10 @@ export async function loginUser(req: Request, res: Response) {
       return;
     }
 
-    const isValidPassword = await validatePassword(password, user.password);
+    // Omitting password field from user, so I don't send it to client
+    const { password: candidatePassword, ...userWithoutPassword } = user;
+
+    const isValidPassword = await validatePassword(password, candidatePassword);
     if (!isValidPassword) {
       res.status(401).json({ message: "Invalid credentails" });
       return;
@@ -71,9 +76,7 @@ export async function loginUser(req: Request, res: Response) {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    res.json({
-      message: "User logged in successfully",
-    });
+    res.json(userWithoutPassword);
   } catch (err: any) {
     log.error(`Database error: ${err.message}`);
     res.status(500).json({ message: "Server error" });

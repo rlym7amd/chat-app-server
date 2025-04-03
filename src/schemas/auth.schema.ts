@@ -11,7 +11,7 @@ export const registerSchema = z.object({
   }),
 });
 
-export type registerBody = z.infer<typeof registerSchema.shape.body>;
+export type RegisterBody = z.infer<typeof registerSchema.shape.body>;
 
 export const loginSchema = z.object({
   body: z.object({
@@ -26,4 +26,4 @@ export const loginSchema = z.object({
   }),
 });
 
-export type loginBody = z.infer<typeof loginSchema.shape.body>;
+export type LoginBody = z.infer<typeof loginSchema.shape.body>;
