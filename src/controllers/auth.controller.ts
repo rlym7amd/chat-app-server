@@ -47,7 +47,7 @@ export async function loginUser(
 
     const user = await getUserByEmail(email);
     if (!user) {
-      res.status(401).json({ message: "Invalid credentails" });
+      res.status(401).json({ message: "Invalid credentials" });
       return;
     }
 
@@ -56,7 +56,7 @@ export async function loginUser(
 
     const isValidPassword = await validatePassword(password, candidatePassword);
     if (!isValidPassword) {
-      res.status(401).json({ message: "Invalid credentails" });
+      res.status(401).json({ message: "Invalid credentials" });
       return;
     }
 
