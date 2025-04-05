@@ -14,8 +14,15 @@ export const createConversationMessageSchema = z.object({
   body: z.object({
     content: z.string().min(1, "A message is required"),
   }),
+  params: z.object({
+    conversationId: z.string().min(1, "A conversationId is required"),
+  }),
 });
 
-export type createConversationMessageBody = z.infer<
+export type CreateConversationMessageBody = z.infer<
   typeof createConversationMessageSchema.shape.body
+>;
+
+export type CreateConversationMessageParams = z.infer<
+  typeof createConversationMessageSchema.shape.params
 >;

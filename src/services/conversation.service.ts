@@ -1,11 +1,10 @@
 import { and, eq, or } from "drizzle-orm";
 import { db } from "../db";
 import { conversationsTable, messagesTable } from "../db/schema";
-import { createConversationMessageBody } from "../schemas/conversation.schema";
 
 export async function createConversation(
   creatorId: string,
-  recipientId: string,
+  recipientId: string
 ) {
   const [conversation] = await db
     .insert(conversationsTable)
@@ -20,7 +19,7 @@ export async function createConversation(
 
 export async function getExistingConversation(
   userId: string,
-  friendId: string,
+  friendId: string
 ) {
   const existingConversation = await db
     .select()
@@ -29,13 +28,13 @@ export async function getExistingConversation(
       or(
         and(
           eq(conversationsTable.creatorId, userId),
-          eq(conversationsTable.recipientId, friendId),
+          eq(conversationsTable.recipientId, friendId)
         ),
         and(
           eq(conversationsTable.creatorId, friendId),
-          eq(conversationsTable.recipientId, userId),
-        ),
-      ),
+          eq(conversationsTable.recipientId, userId)
+        )
+      )
     )
     .limit(1);
 
@@ -48,7 +47,7 @@ export async function getConversations(userId: string) {
   return await db.query.conversationsTable.findMany({
     where: or(
       eq(conversationsTable.creatorId, userId),
-      eq(conversationsTable.recipientId, userId),
+      eq(conversationsTable.recipientId, userId)
     ),
     with: {
       recipient: {
@@ -66,14 +65,14 @@ export async function getConversations(userId: string) {
 }
 
 export async function createConversationMessage(
-  body: createConversationMessageBody,
+  content: string,
   conversationId: string,
-  senderId: string,
+  senderId: string
 ) {
   const [message] = await db
     .insert(messagesTable)
     .values({
-      content: body.content,
+      content,
       conversationId,
       senderId,
     })

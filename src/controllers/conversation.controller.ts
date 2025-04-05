@@ -7,11 +7,15 @@ import {
   getExistingConversation,
 } from "../services/conversation.service";
 import { log } from "../logger";
-import { CreateConversationBody } from "../schemas/conversation.schema";
+import {
+  CreateConversationBody,
+  CreateConversationMessageBody,
+  CreateConversationMessageParams,
+} from "../schemas/conversation.schema";
 
 export async function createConversationHandler(
   req: Request<{}, {}, CreateConversationBody>,
-  res: Response,
+  res: Response
 ) {
   try {
     const creatorId = res.locals.user.id as string;
@@ -19,7 +23,7 @@ export async function createConversationHandler(
 
     const existingConversation = await getExistingConversation(
       creatorId,
-      recipientId,
+      recipientId
     );
     if (existingConversation) {
       res.status(409).json({
@@ -41,10 +45,14 @@ export async function createConversationHandler(
 }
 
 export async function createConversationMessageHandler(
-  req: Request,
-  res: Response,
+  req: Request<
+    CreateConversationMessageParams,
+    {},
+    CreateConversationMessageBody
+  >,
+  res: Response
 ) {
-  const body = req.body;
+  const { content } = req.body;
   const { conversationId } = req.params;
   const userId = res.locals.user.id as string;
 
@@ -52,7 +60,7 @@ export async function createConversationMessageHandler(
     res.json({ message: "Conversation id not provided" });
     return;
   }
-  await createConversationMessage(body, conversationId, userId);
+  await createConversationMessage(content, conversationId, userId);
 
   res.status(201).json({ message: "Message created successfully" });
 }
