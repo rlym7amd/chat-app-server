@@ -10,7 +10,7 @@ dotenv.config();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "*", // Allow all origins for development
+    origin: process.env.ORIGIN, // Allow all origins for development
   },
 });
 
