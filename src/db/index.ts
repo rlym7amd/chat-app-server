@@ -6,9 +6,21 @@ import { log } from "../logger";
 
 dotenv.config();
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL!,
-});
+const isProduction = process.env.NODE_ENV === "production";
+
+const pool = new Pool(
+  isProduction
+    ? {
+        connectionString: process.env.DATABASE_URL!,
+      }
+    : {
+        host: process.env.DB_HOST!,
+        user: process.env.DB_USER!,
+        password: process.env.DB_PASSWORD!,
+        database: process.env.DB_NAME!,
+        port: parseInt(process.env.DB_PORT!),
+      }
+);
 
 pool.on("error", (err) => {
   log.error("Database connection failed:", err.message);
