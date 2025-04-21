@@ -2,11 +2,11 @@
   "name": "chat-app-server",
   "version": "0.0.0",
   "description": "",
-  "main": "/app/dist/index.js",
+  "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "npx tsc",
-    "start": "node /app/dist/index.js",
+    "start": "node dist/src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
