@@ -1,5 +1,5 @@
 {
-  "id": "f73a2387-3ddc-49e0-bbed-25e94f027246",
+  "id": "1d3c6674-915f-42f1-a3f2-22457b3cea10",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -15,6 +15,18 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
+        "creator_id": {
+          "name": "creator_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recipient_id": {
+          "name": "recipient_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -24,15 +36,51 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "conversations_creator_id_users_id_fk": {
+          "name": "conversations_creator_id_users_id_fk",
+          "tableFrom": "conversations",
+          "tableTo": "users",
+          "columnsFrom": [
+            "creator_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "conversations_recipient_id_users_id_fk": {
+          "name": "conversations_recipient_id_users_id_fk",
+          "tableFrom": "conversations",
+          "tableTo": "users",
+          "columnsFrom": [
+            "recipient_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "conversations_creator_id_recipient_id_unique": {
+          "name": "conversations_creator_id_recipient_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "creator_id",
+            "recipient_id"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.friendships": {
-      "name": "friendships",
+    "public.friend_Requests": {
+      "name": "friend_Requests",
       "schema": "",
       "columns": {
         "id": {
@@ -42,14 +90,14 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "user_id": {
-          "name": "user_id",
+        "sender_id": {
+          "name": "sender_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
-        "friend_id": {
-          "name": "friend_id",
+        "recipient_id": {
+          "name": "recipient_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -65,12 +113,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "friendships_user_id_users_id_fk": {
-          "name": "friendships_user_id_users_id_fk",
-          "tableFrom": "friendships",
+        "friend_Requests_sender_id_users_id_fk": {
+          "name": "friend_Requests_sender_id_users_id_fk",
+          "tableFrom": "friend_Requests",
           "tableTo": "users",
           "columnsFrom": [
-            "user_id"
+            "sender_id"
           ],
           "columnsTo": [
             "id"
@@ -78,12 +126,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "friendships_friend_id_users_id_fk": {
-          "name": "friendships_friend_id_users_id_fk",
-          "tableFrom": "friendships",
+        "friend_Requests_recipient_id_users_id_fk": {
+          "name": "friend_Requests_recipient_id_users_id_fk",
+          "tableFrom": "friend_Requests",
           "tableTo": "users",
           "columnsFrom": [
-            "friend_id"
+            "recipient_id"
           ],
           "columnsTo": [
             "id"
@@ -153,65 +201,6 @@
         "messages_conversation_id_conversations_id_fk": {
           "name": "messages_conversation_id_conversations_id_fk",
           "tableFrom": "messages",
-          "tableTo": "conversations",
-          "columnsFrom": [
-            "conversation_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.participants": {
-      "name": "participants",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "conversation_id": {
-          "name": "conversation_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "participants_user_id_users_id_fk": {
-          "name": "participants_user_id_users_id_fk",
-          "tableFrom": "participants",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "participants_conversation_id_conversations_id_fk": {
-          "name": "participants_conversation_id_conversations_id_fk",
-          "tableFrom": "participants",
           "tableTo": "conversations",
           "columnsFrom": [
             "conversation_id"
